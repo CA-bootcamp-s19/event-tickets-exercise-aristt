@@ -32,8 +32,10 @@ contract('EventTicket', function(accounts) {
         it("sales should be open when the contract is created", async() => {
             const instance = await EventTickets.new(description, url, ticketNumber)
             const eventDetails = await instance.readEvent()
-            
-            assert.equal(eventDetails.isOpen, true, "the event should be open")
+
+            // console.log(eventDetails);
+
+            assert.equal(eventDetails.isOpen, true, "the event should be open");
         })
     })
 
@@ -41,7 +43,7 @@ contract('EventTicket', function(accounts) {
 
         it("readEvent() should return myEvent details", async() => {
             const event = await instance.readEvent()
-    
+
             assert.equal(event.description, description, "the event descriptions should match")
             assert.equal(event.website, url, "the event urls should match")
             assert.equal(event.totalTickets, ticketNumber, "the number of tickets for sale should be set")
@@ -53,7 +55,7 @@ contract('EventTicket', function(accounts) {
             it("tickets should be able to be purchased when the event is open", async() => {
                 await instance.buyTickets(1, {from: secondAccount, value: ticketPrice})
                 const eventDetails = await instance.readEvent()
-        
+
                 assert.equal(eventDetails.sales, 1, "the ticket sales should be 1")
             })
 
@@ -63,13 +65,15 @@ contract('EventTicket', function(accounts) {
 
             it("tickets should only be able to be purchased when there are enough remaining", async() => {
                 await instance.buyTickets(50, {from: secondAccount, value: ticketPrice * 50})
-                await catchRevert(instance.buyTickets(51, {from: thirdAccount, value: ticketPrice * 51}))   
+                await catchRevert(instance.buyTickets(51, {from: thirdAccount, value: ticketPrice * 51}))
             })
 
             it("the buyers account should be credited with tickets when they make a purchase", async() => {
                 await instance.buyTickets(2, {from: secondAccount, value: ticketPrice * 2})
                 const count = await instance.getBuyerTicketCount(secondAccount)
-        
+
+                // console.log('count: ' + count);
+
                 assert.equal(count, 2, "the buyer should have 2 tickets in their account")
             })
 
@@ -77,7 +81,7 @@ contract('EventTicket', function(accounts) {
                 await instance.buyTickets(2, {from: secondAccount, value: ticketPrice * 2})
                 const eventDetails = await instance.readEvent()
                 const sales = eventDetails.sales
-        
+
                 assert.equal(sales, 2, "the event should have 2 sales recorded")
             })
 
@@ -87,29 +91,29 @@ contract('EventTicket', function(accounts) {
                 const preSaleAmount = await web3.eth.getBalance(secondAccount)
                 const buyReceipt = await instance.buyTickets(1, {from: secondAccount, value: paymentAmount})
                 const postSaleAmount = await web3.eth.getBalance(secondAccount)
-                
+
                 const buyTx = await web3.eth.getTransaction(buyReceipt.tx)
                 let buyTxCost = Number(buyTx.gasPrice) * buyReceipt.receipt.gasUsed
 
                 assert.equal(postSaleAmount, (new BN(preSaleAmount).sub(new BN(ticketPrice)).sub(new BN(buyTxCost))).toString(), "overpayment should be refunded")
             })
-        })  
-        
+        })
+
         describe("getRefund()", async() => {
 
             it("buyers should be refunded the appropriate value amount when submitting a refund", async() => {
                 const preSaleAmount = await web3.eth.getBalance(secondAccount)
                 const buyReceipt = await instance.buyTickets(1, {from: secondAccount, value: ticketPrice})
                 const refundReceipt = await instance.getRefund({from: secondAccount})
-                const postSaleAmount = await web3.eth.getBalance(secondAccount) 
-                
+                const postSaleAmount = await web3.eth.getBalance(secondAccount)
+
                 const buyTx = await web3.eth.getTransaction(buyReceipt.tx)
                 let buyTxCost = Number(buyTx.gasPrice) * buyReceipt.receipt.gasUsed
 
                 const refundTx = await web3.eth.getTransaction(refundReceipt.tx)
                 let refundTxCost = Number(refundTx.gasPrice) * refundReceipt.receipt.gasUsed
 
-                assert.equal(postSaleAmount, (new BN(preSaleAmount).sub(new BN(buyTxCost)).sub(new BN(refundTxCost))).toString(), "buyer should be fully refunded when calling getRefund()")        
+                assert.equal(postSaleAmount, (new BN(preSaleAmount).sub(new BN(buyTxCost)).sub(new BN(refundTxCost))).toString(), "buyer should be fully refunded when calling getRefund()")
             })
         })
 
@@ -133,12 +137,12 @@ contract('EventTicket', function(accounts) {
 
             it("the contract balance should be transferred to the owner when the event is closed", async() => {
                 const numberOfTickets = 1
-                
+
                 const preSaleAmount = await web3.eth.getBalance(firstAccount)
                 const buyReceipt = await instance.buyTickets(numberOfTickets, {from: secondAccount, value: numberOfTickets * ticketPrice})
                 const endSaleReceipt = await instance.endSale({from: firstAccount})
                 const postSaleAmount = await web3.eth.getBalance(firstAccount)
-                
+
                 const endSaleTx = await web3.eth.getTransaction(endSaleReceipt.tx)
                 let endSaleTxCost = Number(endSaleTx.gasPrice) * endSaleReceipt.receipt.gasUsed
 
@@ -147,5 +151,3 @@ contract('EventTicket', function(accounts) {
         })
     })
 })
-
-

@@ -1,0 +1,1180 @@
+{
+  "contractName": "EventTicketsV2",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "idGenerator",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "desc",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "name": "ticketsAvailable",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "eventId",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogEventAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "buyer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "numTickets",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogBuyTickets",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "accountRefunded",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "eventId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "numTickets",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogGetRefund",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "name": "eventId",
+          "type": "uint256"
+        }
+      ],
+      "name": "LogEndSale",
+      "type": "event"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.8+commit.23d335f2\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"constant\":true,\"inputs\":[],\"name\":\"idGenerator\",\"outputs\":[{\"name\":\"\",\"type\":\"uint256\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"desc\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"url\",\"type\":\"string\"},{\"indexed\":false,\"name\":\"ticketsAvailable\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"eventId\",\"type\":\"uint256\"}],\"name\":\"LogEventAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"buyer\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"eventId\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"numTickets\",\"type\":\"uint256\"}],\"name\":\"LogBuyTickets\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"accountRefunded\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"eventId\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"numTickets\",\"type\":\"uint256\"}],\"name\":\"LogGetRefund\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"name\":\"balance\",\"type\":\"uint256\"},{\"indexed\":false,\"name\":\"eventId\",\"type\":\"uint256\"}],\"name\":\"LogEndSale\",\"type\":\"event\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/apiazza00/Base/Workspace/event-tickets-exercise-aristt/contracts/EventTicketsV2.sol\":\"EventTicketsV2\"},\"evmVersion\":\"petersburg\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/apiazza00/Base/Workspace/event-tickets-exercise-aristt/contracts/EventTicketsV2.sol\":{\"keccak256\":\"0x1f537c8cdee5c80eef5a6d0dde77255b86c5217855a546999e93d1d8f04870d4\",\"urls\":[\"bzzr://4679f4ec07173ee1e4c7a45239fcd43fe9dc03fb2b8244ae244f820f36f8ff5f\"]}},\"version\":1}",
+  "bytecode": "0x60806040526064600055348015601457600080fd5b50607b806100236000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c8063e7bd92b914602d575b600080fd5b60336049565b6040518082815260200191505060405180910390f35b6001548156fea165627a7a72305820b1836bfba97016cdcb9bd5216f7df3fdcdffef2229226ba96df6ca87090d76b60029",
+  "deployedBytecode": "0x6080604052348015600f57600080fd5b506004361060285760003560e01c8063e7bd92b914602d575b600080fd5b60336049565b6040518082815260200191505060405180910390f35b6001548156fea165627a7a72305820b1836bfba97016cdcb9bd5216f7df3fdcdffef2229226ba96df6ca87090d76b60029",
+  "sourceMap": "145:3783:1:-;;;320:7;298:29;;145:3783;8:9:-1;5:2;;;30:1;27;20:12;5:2;145:3783:1;;;;;;;",
+  "deployedSourceMap": "145:3783:1:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;145:3783:1;;;;;;;;;;;;;;;;;;;418:23;;;:::i;:::-;;;;;;;;;;;;;;;;;;;;;;;:::o",
+  "source": "pragma solidity ^0.5.0;\r\n\r\n    /*\r\n        The EventTicketsV2 contract keeps track of the details and ticket sales of multiple events.\r\n     */\r\ncontract EventTicketsV2 {\r\n\r\n    /*\r\n        Define an public owner variable. Set it to the creator of the contract when it is initialized.\r\n    */\r\n    uint   PRICE_TICKET = 100 wei;\r\n\r\n    /*\r\n        Create a variable to keep track of the event ID numbers.\r\n    */\r\n    uint public idGenerator;\r\n    \r\n    /*\r\n        Define an Event struct, similar to the V1 of this contract.\r\n        The struct has 6 fields: description, website (URL), totalTickets, sales, buyers, and isOpen.\r\n        Choose the appropriate variable type for each field.\r\n        The \"buyers\" field should keep track of addresses and how many tickets each buyer purchases.\r\n    */\r\n\r\n    /*\r\n        Create a mapping to keep track of the events.\r\n        The mapping key is an integer, the value is an Event struct.\r\n        Call the mapping \"events\".\r\n    */\r\n\r\n    event LogEventAdded(string desc, string url, uint ticketsAvailable, uint eventId);\r\n    event LogBuyTickets(address buyer, uint eventId, uint numTickets);\r\n    event LogGetRefund(address accountRefunded, uint eventId, uint numTickets);\r\n    event LogEndSale(address owner, uint balance, uint eventId);\r\n\r\n    /*\r\n        Create a modifier that throws an error if the msg.sender is not the owner.\r\n    */\r\n\r\n    /*\r\n        Define a function called addEvent().\r\n        This function takes 3 parameters, an event description, a URL, and a number of tickets.\r\n        Only the contract owner should be able to call this function.\r\n        In the function:\r\n            - Set the description, URL and ticket number in a new event.\r\n            - set the event to open\r\n            - set an event ID\r\n            - increment the ID\r\n            - emit the appropriate event\r\n            - return the event's ID\r\n    */\r\n\r\n    /*\r\n        Define a function called readEvent().\r\n        This function takes one parameter, the event ID.\r\n        The function returns information about the event this order:\r\n            1. description\r\n            2. URL\r\n            3. ticket available\r\n            4. sales\r\n            5. isOpen\r\n    */     \r\n\r\n    /*\r\n        Define a function called buyTickets().\r\n        This function allows users to buy tickets for a specific event.\r\n        This function takes 2 parameters, an event ID and a number of tickets.\r\n        The function checks:\r\n            - that the event sales are open\r\n            - that the transaction value is sufficient to purchase the number of tickets\r\n            - that there are enough tickets available to complete the purchase\r\n        The function:\r\n            - increments the purchasers ticket count\r\n            - increments the ticket sale count\r\n            - refunds any surplus value sent\r\n            - emits the appropriate event\r\n    */\r\n\r\n    /*\r\n        Define a function called getRefund().\r\n        This function allows users to request a refund for a specific event.\r\n        This function takes one parameter, the event ID.\r\n        TODO:\r\n            - check that a user has purchased tickets for the event\r\n            - remove refunded tickets from the sold count\r\n            - send appropriate value to the refund requester\r\n            - emit the appropriate event\r\n    */\r\n\r\n    /*\r\n        Define a function called getBuyerNumberTickets()\r\n        This function takes one parameter, an event ID\r\n        This function returns a uint, the number of tickets that the msg.sender has purchased.\r\n    */\r\n\r\n    /*\r\n        Define a function called endSale()\r\n        This function takes one parameter, the event ID\r\n        Only the contract owner can call this function\r\n        TODO:\r\n            - close event sales\r\n            - transfer the balance from those event sales to the contract owner\r\n            - emit the appropriate event\r\n    */\r\n}\r\n",
+  "sourcePath": "C:/Users/apiazza00/Base/Workspace/event-tickets-exercise-aristt/contracts/EventTicketsV2.sol",
+  "ast": {
+    "absolutePath": "/C/Users/apiazza00/Base/Workspace/event-tickets-exercise-aristt/contracts/EventTicketsV2.sol",
+    "exportedSymbols": {
+      "EventTicketsV2": [
+        350
+      ]
+    },
+    "id": 351,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 310,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 350,
+        "linearizedBaseContracts": [
+          350
+        ],
+        "name": "EventTicketsV2",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 313,
+            "name": "PRICE_TICKET",
+            "nodeType": "VariableDeclaration",
+            "scope": 350,
+            "src": "298:29:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 311,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "298:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "argumentTypes": null,
+              "hexValue": "313030",
+              "id": 312,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "320:7:1",
+              "subdenomination": "wei",
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_100_by_1",
+                "typeString": "int_const 100"
+              },
+              "value": "100"
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 315,
+            "name": "idGenerator",
+            "nodeType": "VariableDeclaration",
+            "scope": 350,
+            "src": "418:23:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 314,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "418:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 325,
+            "name": "LogEventAdded",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 324,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 317,
+                  "indexed": false,
+                  "name": "desc",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1007:11:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 316,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1007:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 319,
+                  "indexed": false,
+                  "name": "url",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1020:10:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 318,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1020:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 321,
+                  "indexed": false,
+                  "name": "ticketsAvailable",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1032:21:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 320,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1032:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 323,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1055:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 322,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1055:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1006:62:1"
+            },
+            "src": "987:82:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 333,
+            "name": "LogBuyTickets",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 332,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 327,
+                  "indexed": false,
+                  "name": "buyer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1095:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 326,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1095:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 329,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1110:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 328,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1110:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 331,
+                  "indexed": false,
+                  "name": "numTickets",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1124:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 330,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1124:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1094:46:1"
+            },
+            "src": "1075:66:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 341,
+            "name": "LogGetRefund",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 340,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 335,
+                  "indexed": false,
+                  "name": "accountRefunded",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1166:23:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 334,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1166:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 337,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1191:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 336,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1191:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 339,
+                  "indexed": false,
+                  "name": "numTickets",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1205:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 338,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1205:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1165:56:1"
+            },
+            "src": "1147:75:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 349,
+            "name": "LogEndSale",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 348,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 343,
+                  "indexed": false,
+                  "name": "owner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1245:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 342,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1245:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 345,
+                  "indexed": false,
+                  "name": "balance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1260:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 344,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1260:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 347,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1274:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 346,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1274:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1244:43:1"
+            },
+            "src": "1228:60:1"
+          }
+        ],
+        "scope": 351,
+        "src": "145:3783:1"
+      }
+    ],
+    "src": "0:3930:1"
+  },
+  "legacyAST": {
+    "absolutePath": "/C/Users/apiazza00/Base/Workspace/event-tickets-exercise-aristt/contracts/EventTicketsV2.sol",
+    "exportedSymbols": {
+      "EventTicketsV2": [
+        350
+      ]
+    },
+    "id": 351,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 310,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:1"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 350,
+        "linearizedBaseContracts": [
+          350
+        ],
+        "name": "EventTicketsV2",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": false,
+            "id": 313,
+            "name": "PRICE_TICKET",
+            "nodeType": "VariableDeclaration",
+            "scope": 350,
+            "src": "298:29:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 311,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "298:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": {
+              "argumentTypes": null,
+              "hexValue": "313030",
+              "id": 312,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "320:7:1",
+              "subdenomination": "wei",
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_100_by_1",
+                "typeString": "int_const 100"
+              },
+              "value": "100"
+            },
+            "visibility": "internal"
+          },
+          {
+            "constant": false,
+            "id": 315,
+            "name": "idGenerator",
+            "nodeType": "VariableDeclaration",
+            "scope": 350,
+            "src": "418:23:1",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_uint256",
+              "typeString": "uint256"
+            },
+            "typeName": {
+              "id": 314,
+              "name": "uint",
+              "nodeType": "ElementaryTypeName",
+              "src": "418:4:1",
+              "typeDescriptions": {
+                "typeIdentifier": "t_uint256",
+                "typeString": "uint256"
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 325,
+            "name": "LogEventAdded",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 324,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 317,
+                  "indexed": false,
+                  "name": "desc",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1007:11:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 316,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1007:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 319,
+                  "indexed": false,
+                  "name": "url",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1020:10:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_string_memory_ptr",
+                    "typeString": "string"
+                  },
+                  "typeName": {
+                    "id": 318,
+                    "name": "string",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1020:6:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_string_storage_ptr",
+                      "typeString": "string"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 321,
+                  "indexed": false,
+                  "name": "ticketsAvailable",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1032:21:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 320,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1032:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 323,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 325,
+                  "src": "1055:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 322,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1055:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1006:62:1"
+            },
+            "src": "987:82:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 333,
+            "name": "LogBuyTickets",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 332,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 327,
+                  "indexed": false,
+                  "name": "buyer",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1095:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 326,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1095:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 329,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1110:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 328,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1110:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 331,
+                  "indexed": false,
+                  "name": "numTickets",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 333,
+                  "src": "1124:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 330,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1124:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1094:46:1"
+            },
+            "src": "1075:66:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 341,
+            "name": "LogGetRefund",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 340,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 335,
+                  "indexed": false,
+                  "name": "accountRefunded",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1166:23:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 334,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1166:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 337,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1191:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 336,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1191:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 339,
+                  "indexed": false,
+                  "name": "numTickets",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 341,
+                  "src": "1205:15:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 338,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1205:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1165:56:1"
+            },
+            "src": "1147:75:1"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 349,
+            "name": "LogEndSale",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 348,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 343,
+                  "indexed": false,
+                  "name": "owner",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1245:13:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 342,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1245:7:1",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 345,
+                  "indexed": false,
+                  "name": "balance",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1260:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 344,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1260:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 347,
+                  "indexed": false,
+                  "name": "eventId",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 349,
+                  "src": "1274:12:1",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 346,
+                    "name": "uint",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1274:4:1",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1244:43:1"
+            },
+            "src": "1228:60:1"
+          }
+        ],
+        "scope": 351,
+        "src": "145:3783:1"
+      }
+    ],
+    "src": "0:3930:1"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.8+commit.23d335f2.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.0.10",
+  "updatedAt": "2019-06-26T13:15:56.523Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}

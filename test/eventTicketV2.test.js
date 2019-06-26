@@ -1,3 +1,4 @@
+
 var EventTicketsV2 = artifacts.require('EventTicketsV2')
 let catchRevert = require("./exceptionsHelpers.js").catchRevert
 const BN = web3.utils.BN
@@ -77,13 +78,13 @@ contract('EventTicketV2', function(accounts) {
         describe("buyTickets()", async() =>{
             it("tickets should only be able to be purchased when the event is open", async() => {
                 const numberOfTickets = 1
-                
+
                 // event w/ id 1 does not exist, therefore not open
                 await catchRevert(instance.buyTickets(1, numberOfTickets, {from: firstAccount, value: ticketPrice}))
-            
+
                 await instance.addEvent(event1.description, event1.website, event1.ticketsAvailable, {from: deployAccount} )
                 await instance.buyTickets(0, numberOfTickets, {from: firstAccount, value: ticketPrice})
-                
+
                 const eventDetails = await instance.readEvent(0)
                 assert.equal(eventDetails['3'], numberOfTickets, `the ticket sales should be ${numberOfTickets}`)
             })
@@ -102,9 +103,9 @@ contract('EventTicketV2', function(accounts) {
 
             it("a LogBuyTickets() event with the correct details should be emitted when tickets are purchased", async() => {
                 const numTickets = 1
-                
+
                 await instance.addEvent(event1.description, event1.website, event1.ticketsAvailable, {from: deployAccount} )
-                const tx = await instance.buyTickets(0, numTickets, {from: firstAccount, value: ticketPrice * numTickets})                
+                const tx = await instance.buyTickets(0, numTickets, {from: firstAccount, value: ticketPrice * numTickets})
                 const eventData = tx.logs[0].args
 
                 assert.equal(eventData.buyer, firstAccount, "the buyer account should be the msg.sender" )
@@ -116,9 +117,9 @@ contract('EventTicketV2', function(accounts) {
         describe("getRefund()", async() =>{
             it("only accounts that have purchased tickets should be able to get a refund", async() => {
                 const numTickets = 1
-                
+
                 await instance.addEvent(event1.description, event1.website, event1.ticketsAvailable, {from: deployAccount} )
-                await instance.buyTickets(0, numTickets, {from: firstAccount, value: ticketPrice * numTickets}) 
+                await instance.buyTickets(0, numTickets, {from: firstAccount, value: ticketPrice * numTickets})
 
                 await catchRevert(instance.getRefund(0, {from: secondAccount}))
                 const tx = await instance.getRefund(0, {from: firstAccount})
@@ -133,15 +134,15 @@ contract('EventTicketV2', function(accounts) {
                 await instance.addEvent(event1.description, event1.website, event1.ticketsAvailable, {from: deployAccount} )
                 const buyReceipt = await instance.buyTickets(0, 1, {from: secondAccount, value: ticketPrice})
                 const refundReceipt =await instance.getRefund(0, {from: secondAccount})
-                const postSaleAmount = await web3.eth.getBalance(secondAccount) 
-                
+                const postSaleAmount = await web3.eth.getBalance(secondAccount)
+
                 const buyTx = await web3.eth.getTransaction(buyReceipt.tx)
                 let buyTxCost = Number(buyTx.gasPrice) * buyReceipt.receipt.gasUsed
 
                 const refundTx = await web3.eth.getTransaction(refundReceipt.tx)
                 let refundTxCost = Number(refundTx.gasPrice) * refundReceipt.receipt.gasUsed
 
-                assert.equal(postSaleAmount, (new BN(preSaleAmount).sub(new BN(buyTxCost)).sub(new BN(refundTxCost))).toString(), "buyer should be fully refunded when calling getRefund()")             
+                assert.equal(postSaleAmount, (new BN(preSaleAmount).sub(new BN(buyTxCost)).sub(new BN(refundTxCost))).toString(), "buyer should be fully refunded when calling getRefund()")
             })
         })
 
@@ -173,7 +174,7 @@ contract('EventTicketV2', function(accounts) {
                 await instance.addEvent(event1.description, event1.website, event1.ticketsAvailable, {from: deployAccount} )
                 await instance.buyTickets(0, numberToPurchase, {from: secondAccount, value: ticketPrice*numberToPurchase})
                 const txResult = await instance.endSale(0, {from: deployAccount})
-                
+
                 const amount = txResult.logs[0].args['1'].toString()
 
                 assert.equal(amount, ticketPrice*numberToPurchase, "the first emitted event should contain the tranferred amount as the second parameter")
